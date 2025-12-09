@@ -17,11 +17,6 @@ env/
 # Mac OS
 .DS_Store
 
-# Project Data
-*.pdf
-*.txt
-!requirements.txt
-
 # Vector Database
 chroma_db/
 chroma_data/
