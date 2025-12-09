@@ -7,8 +7,24 @@
 
 ## Prerequisites
 - Python 3.8+
-- A running embeddings server compatible with the OpenAI-style `/v1/embeddings` endpoint (e.g., vLLM with `intfloat/e5-small`).
-- Book file, e.g., `sample_book.pdf`.
+- A running embeddings server compatible with the OpenAI-style `/v1/embeddings` endpoint (e.g., vLLM with `intfloat/e5-small`). See [vllm](https://docs.vllm.ai/en/latest/getting_started/installation/).
+- If GPU is not accessible, you can use STAPI (Sentence Transformers API):
+```
+# Clone the repository (or install from source)
+git clone https://github.com/substratusai/stapi.git
+cd stapi
+
+# Install dependencies (requires Python 3.9, 3.10, or 3.11)
+pip install -r requirements.txt
+
+
+# Set the environment variable to use the E5 model
+export MODEL="intfloat/e5-small-v2"
+
+# Start the server using Uvicorn on the specified port
+# The default endpoint will be http://localhost:8000/v1/embeddings
+uvicorn main:app --host 0.0.0.0 --port 8000
+```
 
 ## Installation
 - Create and activate a virtual environment:
@@ -19,7 +35,6 @@
 
 ## Configure Embeddings Server
 - Default base URL: `http://localhost:8000/v1`.
-- If your server runs elsewhere, change `base_url` when instantiating `EmbeddingClient` or set an environment variable and pass it through.
 
 ## Index and Retrieve
 - Ensure the embeddings server is running.

@@ -2,6 +2,13 @@ import re
 from typing import List, Optional, Tuple
 from pypdf import PdfReader
 
+def sanitize_text(text: str) -> str:
+    text = text or ""
+    text = re.sub(r"[\u25A0\u25AA\u25AB\u25CF\u2022\u25E6\u25C6\u25C7\u25FC\u25FB\u25FE\u25FD\uFFFD]", " ", text)
+    text = re.sub(r"[\x00-\x1F\x7F]", " ", text)
+    text = re.sub(r"\s+", " ", text)
+    return text.strip()
+
 
 def extract_text_with_metadata(pdf_path: str) -> List[Tuple[str, Optional[str], Optional[int]]]:
     reader = PdfReader(pdf_path)
@@ -15,6 +22,7 @@ def extract_text_with_metadata(pdf_path: str) -> List[Tuple[str, Optional[str], 
             text = page.extract_text() or ""
         except Exception:
             text = ""
+        text = sanitize_text(text)
 
         # naive chapter detection: look for lines starting with Chapter
         for line in text.splitlines():
@@ -25,7 +33,7 @@ def extract_text_with_metadata(pdf_path: str) -> List[Tuple[str, Optional[str], 
 
         sentences = split_into_sentences(text)
         for s in sentences:
-            s_clean = s.strip()
+            s_clean = sanitize_text(s)
             if s_clean:
                 results.append((s_clean, chapter, page_num))
 
@@ -33,9 +41,8 @@ def extract_text_with_metadata(pdf_path: str) -> List[Tuple[str, Optional[str], 
 
 
 def split_into_sentences(text: str) -> List[str]:
-    text = re.sub(r"\s+", " ", text)
-    # simple sentence splitter handling ., ?, ! and quotes
-    parts = re.split(r"(?<=[\.?\!])\s+\"?", text)
+    text = sanitize_text(text)
+    parts = re.split(r"(?<=[\.\?\!])\s+\"?", text)
     return [p for p in parts if p]
 
 
@@ -47,7 +54,7 @@ def get_page_texts(pdf_path: str) -> List[str]:
             t = page.extract_text() or ""
         except Exception:
             t = ""
-        texts.append(t)
+        texts.append(sanitize_text(t))
     return texts
 
 

@@ -67,10 +67,9 @@ class SentenceRetriever:
         key_claims = await extract_key_claims_local(req.student_essay, max_claims=max(1, len(paragraphs)))
         async with EmbeddingClient() as ec:
             q_emb = await ec.embed(paragraphs + key_claims)
-
         # Query per vector and collect candidates (use Chroma distances in cosine space)
         candidates: List[Tuple[str, dict, float]] = []
-        per_query_n = 1
+        per_query_n = 2
         for i in range(len(q_emb)):
             res = self._store.query(collection=self._collection, query_embeddings=[q_emb[i]], n_results=per_query_n)
             docs = res.get("documents", [[]])[0]
@@ -78,6 +77,7 @@ class SentenceRetriever:
             dists = res.get("distances", [[]])[0]
             for doc, meta, dist in zip(docs, metas, dists):
                 candidates.append((doc, meta, float(dist)))
+        print(f"Total candidates: {len(candidates)}")
 
         # Diversity filtering and score fusion
         results: List[RetrievalResult] = []
@@ -102,7 +102,10 @@ class SentenceRetriever:
                 continue
             seen_token_sets.append(ts)
             diverse.append((doc, meta, score))
+        print(f"After score fusion and diversity filtering: {len(diverse)}")
+
         selected = diverse[:req.top_k]
+        from .pdf_utils import sanitize_text as _sanitize
         for doc, meta, score in selected:
             chapter = meta.get("chapter") if isinstance(meta, dict) else None
             page = meta.get("page") if isinstance(meta, dict) else None
@@ -112,10 +115,10 @@ class SentenceRetriever:
             next_id = meta.get("next_sentence_id") if isinstance(meta, dict) else None
             prev_s = None if prev_id in (None, "null") else self._id_to_sentence.get(prev_id)
             next_s = None if next_id in (None, "null") else self._id_to_sentence.get(next_id)
-            prev_part = f"previous sentence: {prev_s}" if prev_s else "previous sentence: None"
-            next_part = f"next sentence: {next_s}" if next_s else "next sentence: None"
-            context = f"{prev_part}, {next_part}"
-            results.append(RetrievalResult(sentence=doc, score=round(score, 4), context=context, chapter=chapter, page=page))
+            prev_part = prev_s if prev_s else ""
+            next_part = next_s if next_s else ""
+            context = f"{prev_part} --{doc}-- {next_part}"
+            results.append(RetrievalResult(sentence=_sanitize(doc), score=round(score, 4), context=context, chapter=chapter, page=page))
 
         return results
 

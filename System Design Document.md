@@ -84,10 +84,9 @@ I prefer not to use a hybrid retrieval method.
 - Besides, for essays, we care more about students’ ideas than exact wording, and it is common practice to avoid repeating the same words. A sentence can be retrieved even if it shares no words with the query. For example, the essay sentence "Studies show that heavy social media users often experience increased anxiety and decreased attention spans" semantically matches the book sentence "An endless bombardment of news and gossip and images has rendered us manic information addicts," even though they share no common words.
 
 
-**The number of retrieved sentences will match the number of body paragraphs in the essay.**
+**The number of retrieved sentences (top_k) will match the number of paragraphs in the essay.**
 
 - Usually one idea is expressed in one paragraph, so one sentence with surrounding context is enough to match that.
-- In total, usually 2-3 sentences are retrieved as most essays have 2-3 body paragraphs. With these 2-3 sentences and their previous and next sentences, we can cover most of the ideas in the essay.
 - Fewer sentences will make it easier for the LLM to generate clear feedback with direct evidence, avoiding overwhelming the user.
 - Less context reduces the cost and latency.
 

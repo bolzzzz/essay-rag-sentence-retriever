@@ -91,7 +91,8 @@ class OfflineIndexer:
                     paragraph_id = paragraph_counter
                     paragraph_counter += 1
                     for j, s in enumerate(para_sents):
-                        s_clean = s.strip()
+                        from .pdf_utils import sanitize_text as _sanitize
+                        s_clean = _sanitize(s)
                         # Find chapter from by_page list (advance pointer until match or end)
                         ch_for_s = "Unknown"
                         # advance ptr while mismatch
@@ -133,10 +134,6 @@ class OfflineIndexer:
                 embeddings = await ec.embed(documents)
 
             self.store.add(collection=self.collection, ids=ids, embeddings=embeddings, metadatas=metadatas, documents=documents)
-            # Logging filtered sections for verification
-            for item in filtered_logs:
-                logger.info(f"Filtered page {item['page']} [{item['label']}:{item['confidence']}] -> {item['sentence']}")
-            logger.info(f"Indexed {len(documents)} content sentences from {pdf_path}; filtered {len(filtered_logs)} items")
         except Exception as e:
             logger.exception(f"Indexing failed for {pdf_path}: {e}")
             raise

@@ -1,5 +1,5 @@
 # This module is designed to use a local LLM for key-claim extraction.
-# Currently, it uses a heuristic approach because I have no access to GPU.
+# Currently, it uses a heuristic approach to streamline the workflow.
 
 import re
 from typing import List

@@ -28,7 +28,7 @@ class EmbeddingClient:
         self._client: Optional[httpx.AsyncClient] = None
 
     async def __aenter__(self):
-        self._client = httpx.AsyncClient(timeout=30)
+        self._client = httpx.AsyncClient(timeout=1000)
         return self
 
     async def __aexit__(self, exc_type, exc, tb):
