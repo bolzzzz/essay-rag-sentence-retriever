@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+
+# Virtual Environment
+venv/
+.venv/
+env/
+
+# IDEs
+.vscode/
+.idea/
+
+# Mac OS
+.DS_Store
+
+# Project Data
+*.pdf
+*.txt
+!requirements.txt
+
+# Vector Database
+chroma_db/
+chroma_data/
