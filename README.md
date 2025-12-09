@@ -7,8 +7,9 @@
 
 ## Prerequisites
 - Python 3.8+
-- A running embeddings server compatible with the OpenAI-style `/v1/embeddings` endpoint (e.g., vLLM with `intfloat/e5-small`). See [vllm](https://docs.vllm.ai/en/latest/getting_started/installation/).
-- If GPU is not accessible, you can use STAPI (Sentence Transformers API):
+- A running embeddings server compatible with the OpenAI-style `/v1/embeddings` endpoint (e.g., vLLM with `intfloat/e5-small`). Default base URL: `http://localhost:8000/v1`.
+  - If a GPU is unavailable and vLLM cannot be run, an alternative is STAPI (Sentence Transformers API):
+
 ```
 # Clone the repository (or install from source)
 git clone https://github.com/substratusai/stapi.git
@@ -33,10 +34,7 @@ uvicorn main:app --host 0.0.0.0 --port 8000
 - Install dependencies:
   - `pip install -r requirements.txt`
 
-## Configure Embeddings Server
-- Default base URL: `http://localhost:8000/v1`.
-
-## Index and Retrieve
+## Index and Retrieve demo
 - Ensure the embeddings server is running.
 - Run: `python demo.py`
 - This repository uses Chroma in-memory (ephemeral) mode; indices live only during the process.
