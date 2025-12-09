@@ -25,3 +25,8 @@
 - Ensure the embeddings server is running.
 - Run: `python demo.py`
 - This repository uses Chroma in-memory (ephemeral) mode; indices live only during the process.
+
+## Future Work
+- **Synthetic Dataset Generation and Hyper-parameter Tuning**  
+  Produce a high-quality synthetic dataset via a language model and use it to systematically optimize retrieval parameters (e.g., sentences per query, total sentences per essay, similarity threshold).  
+  A preliminary dataset is available at `test/synthetic_llm_30.json`.
